@@ -11,6 +11,7 @@ import sys
 
 
 def add_user(uid, uni, lastname, firstname, dct):
+    raise NotImplemented('... TODO')
 
     try:
         #Order : [uni, lastname, firstname, user, drill, mill, sewing, printer, solder, oscope, vinyl, laser, super, banned]
@@ -81,64 +82,6 @@ def log_entry(uid, uni, cnx):
 # a given swiped card
 # To call this function:
 #   Pass the UID of the card, the field to query, and the MySQL db connection
-
-
-def query_card(uid, field, dct):
-
-    try:
-        current_list = dct[uid]
-        if (field == 'user'):
-            return current_list[3]
-        elif (field == 'drill'):
-            return current_list[4]
-        elif (field == 'mill'):
-            return current_list[5]
-        elif (field == 'sewing'):
-            return current_list[6]
-        elif (field == 'printer'):
-            return current_list[7]
-        elif (field == 'solder'):
-            return current_list[8]
-        elif (field == 'oscope'):
-            return current_list[9]
-        elif (field == 'vinyl'):
-            return current_list[10]
-        elif (field == 'laser'):
-            return current_list[11]
-        elif (field == 'super'):
-            return current_list[12]
-        elif (field == 'banned'):
-            return current_list[13]
-    except:
-        e = sys.exc_info()[0]
-        return e
-
-
-def query_card_uni(uni, field, dct):
-    for h, i in dct.iteritems():
-        if(i[0] == uni):
-            if (field == 'user'):
-                return i[3]
-            elif (field == 'drill'):
-                return i[4]
-            elif (field == 'mill'):
-                return i[5]
-            elif (field == 'sewing'):
-                return i[6]
-            elif (field == 'printer'):
-                return i[7]
-            elif (field == 'solder'):
-                return i[8]
-            elif (field == 'oscope'):
-                return i[9]
-            elif (field == 'vinyl'):
-                return i[10]
-            elif (field == 'laser'):
-                return i[11]
-            elif (field == 'super'):
-                return i[12]
-            elif (field == 'banned'):
-                return i[13]
 
 
 def change_permissions(uni, field, perm, dct):
