@@ -4,11 +4,14 @@ import threading
 
 
 class RfidReader(object):
-    """Capture keyboard input from the RFID scanner.
-    Available keys are [A-z0-9\n]"""
+    """Capture keyboard input from the RFID scanner"""
     _rfid = []
 
-    def __init__(self):
+    def __init__(self,
+                 rfid_regex=r'^[0-9A-z]+\n[0-9A-z]{10}$',
+                 allowed_chars_regex=r'[0-9A-z\n]'):
+        self.rfid_regex = rfid_regex
+        self.allowed_chars_regex = allowed_chars_regex
         self.t = threading.Thread(
             target=self._pynput_listener, name="_pynput_listener")
         self.t.start()
@@ -20,7 +23,7 @@ class RfidReader(object):
     def _on_press(self, key):
         k = None
         if isinstance(key, pynput.keyboard.KeyCode) \
-                and re.match('^[0-9A-z\n]$', key.char):
+                and re.match('^%s$' % self.allowed_chars_regex, key.char):
             k = key.char
         elif key == pynput.keyboard.Key.enter:
             k = '\n'
@@ -29,7 +32,7 @@ class RfidReader(object):
 
     def get(self):
         rv = ''.join(self._rfid)
-        if re.match(r'^[0-9A-z]+\n[0-9A-z]{10}$', rv):
+        if re.match(self.rfid_regex, rv):
             self._rfid = []
             return rv
         return ''

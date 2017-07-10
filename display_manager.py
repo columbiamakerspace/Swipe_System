@@ -1,309 +1,138 @@
+from itertools import chain
 try:
-    import Tkinter
-    from Tkinter import *
+    import Tkinter as tk
 except:
-    import tkinter as Tkinter
-    from tkinter import *
+    import tkinter as tk
 import ttk
+
+import manage
 
 
 class DisplayManager(object):
     def notebook(self):
+        '''
+        Create the tabs on the UI page.  Each tab is called a "frame".
+        '''
         nb = ttk.Notebook(self.window)
-
         self.frame_signin(nb)
         self.frame_users(nb)
         self.frame_permissions(nb)
         nb.pack(expand=1, fill="both")
 
-
     # Sign-in frame
     def frame_signin(self, nb):
         signin = ttk.Frame(nb)
-        signFrame = Frame(signin)
-        signFrame.pack(side=TOP, expand=1, fill="both")
-        Z0 = Label(signFrame, text="Tap to sign in")
-        Z0.pack(side=TOP, expand=1, fill="both")
+        signFrame = tk.Frame(signin).pack(side=tk.TOP, expand=1, fill="both")
+        tk.Label(signFrame, text="Tap to sign in")\
+            .pack(side=tk.TOP, expand=1, fill="both")
         nb.add(signin, text="Sign-In")
-
 
     # Users Frame
     def frame_users(self, nb):
-        def add(*args):
-            self.uid.set(args[0])
-            self.uni.set(args[1])
-            self.lastname.set(args[2])
-            self.firstname.set(args[3])
+        swiper = ttk.Frame(nb)
+        addFrame = tk.Frame(swiper)
+        addFrame.pack(side=tk.TOP, expand=1, fill="both")
+
+        entries = {}
+        for text, var in [('UID', self.uid),
+                          ('UNI', self.uni),
+                          ('First Name', self.firstname),
+                          ('Last Name', self.lastname)]:
+            tk.Label(addFrame, text=text)\
+                .pack(side=tk.TOP, expand=1, fill="both")
+            e = tk.Entry(addFrame, textvariable=var)\
+                .pack(side=tk.TOP, expand=1, fill="both")
+            entries[e] = var
+
+        def add(entries):
+            for k, v in entries.items():
+                v.set(k)
             manage.add_user(
                 uid=self.uid.get(), uni=self.uni.get(),
                 lastname=self.lastname.get(), firstname=self.firstname.get())
-
-        swiper = ttk.Frame(nb)
-        addFrame = Frame(swiper)
-        addFrame.pack(side=TOP, expand=1, fill="both")
-        B1 = Label(addFrame, text="UID")
-        C1 = Entry(addFrame, textvariable=self.uid)
-        B2 = Label(addFrame, text="UNI")
-        C2 = Entry(addFrame, textvariable=self.uni)
-        B3 = Label(addFrame, text="First Name")
-        C3 = Entry(addFrame, textvariable=self.firstname)
-        B4 = Label(addFrame, text="Last Name")
-        C4 = Entry(addFrame, textvariable=self.lastname)
-        A0 = Button(
+        tk.Button(
             addFrame, text="Add User", padx=5, pady=5,
-            command=lambda: add(C1.get(), C2.get(), C3.get(), C4.get()))
-        B1.pack(side=TOP, expand=1, fill="both")
-        C1.pack(side=TOP, expand=1, fill="both")
-        B2.pack(side=TOP, expand=1, fill="both")
-        C2.pack(side=TOP, expand=1, fill="both")
-        B3.pack(side=TOP, expand=1, fill="both")
-        C3.pack(side=TOP, expand=1, fill="both")
-        B4.pack(side=TOP, expand=1, fill="both")
-        C4.pack(side=TOP, expand=1, fill="both")
-        A0.pack(side=TOP, expand=1, fill="both")
+            command=lambda: add(entries)).pack(side=tk.BOTTOM)
         nb.add(swiper, text="Add User")
 
     # Permissions Frame
     def frame_permissions(self, nb):
-        permissions = ttk.Frame(nb)
+        self._frame_permissions = permissions = ttk.Frame(nb)
         # Displays current UNI
-        permFrame1 = Frame(permissions)
-        permFrame2 = Frame(permissions)
-        permFrame3 = Frame(permissions)
-        permFrame1.pack(side=TOP, expand=1, fill="x")
-        permFrame2.pack(side=TOP, expand=1, fill="x")
-        permFrame3.pack(side=RIGHT, expand=1, fill="both")
+        permFrame1 = tk.Frame(permissions)
+        permFrame2 = tk.Frame(permissions)
+        permFrame3 = tk.Frame(permissions)
 
         # UNI Entry and Display
-        L1 = Label(permFrame1, text="UNI")
-        E1 = Entry(permFrame1, text=self.uni)
-
-        L1.pack(side=LEFT, expand=1, fill="x")
-        E1.pack(side=LEFT, expand=1, fill="x")
+        tk.Label(permFrame1, text="UNI").pack(side=tk.LEFT, expand=1, fill="x")
+        tk.Entry(permFrame1, text=self.uni)\
+            .pack(side=tk.LEFT, expand=1, fill="x")
 
         # Get and Set Buttons
-        B1 = Button(
-            permFrame1, text="Get", command=self.getDataUNI, padx=5, pady=5)
-        B2 = Button(
-            permFrame2, text="Set", command=self.setDataUNI, padx=5, pady=5)
-        B1.pack(side=RIGHT)
-        B2.pack(side=RIGHT)
+        tk.Button(permFrame1, text="Get", command=self.getDataUNI, padx=5,
+                  pady=5).pack(side=tk.RIGHT)
+        tk.Button(permFrame2, text="Set", command=self.setDataUNI, padx=5,
+                  pady=5).pack(side=tk.RIGHT)
 
         # All the different tool trainings
-        T0 = Checkbutton(
-            permFrame3,
-            text="User",
-            variable=self.user,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
-        T1 = Checkbutton(
-            permFrame3,
-            text="3D Printer",
-            variable=self.printer,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
-        T2 = Checkbutton(
-            permFrame3,
-            text="Laser Cutter",
-            variable=self.laser,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
-        T3 = Checkbutton(
-            permFrame3,
-            text="CNC Mill",
-            variable=self.mill,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
-        T4 = Checkbutton(
-            permFrame3,
-            text="Vinyl Cutter",
-            variable=self.vinyl,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
-        T5 = Checkbutton(
-            permFrame3,
-            text="Soldering",
-            variable=self.solder,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
-        T6 = Checkbutton(
-            permFrame3,
-            text="Drill Press",
-            variable=self.drill,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
-        T7 = Checkbutton(
-            permFrame3,
-            text="Sewing Machine",
-            variable=self.sewing,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
-        T8 = Checkbutton(
-            permFrame3,
-            text="Hand Tools",
-            variable=self.hand,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
-        T9 = Checkbutton(
-            permFrame3,
-            text="Oscilloscope",
-            variable=self.osc,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
-        T10 = Checkbutton(
-            permFrame3,
-            text="superusruser",
-            variable=self.superusr,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
-        T11 = Checkbutton(
-            permFrame3,
-            text="Banned",
-            variable=self.ban,
-            onvalue=1,
-            offvalue=0,
-            padx=5,
-            pady=5)
+        for n, (key, var) in enumerate(chain(
+                self.tools.items(), self.user_flags.items())):
+            tk.Checkbutton(
+                permFrame3,
+                text=key,
+                variable=var,
+                onvalue=1,
+                offvalue=0,
+                padx=5,
+                pady=5
+            ).grid(row=n % 6 + 1, column=n // 6 + 1, sticky="W")
 
-        T0.grid(row=1, column=1, sticky="W")
-        T1.grid(row=2, column=1, sticky="W")
-        T2.grid(row=3, column=1, sticky="W")
-        T3.grid(row=4, column=1, sticky="W")
-        T4.grid(row=5, column=1, sticky="W")
-        T5.grid(row=6, column=1, sticky="W")
-        T6.grid(row=1, column=2, sticky="W")
-        T7.grid(row=2, column=2, sticky="W")
-        T8.grid(row=3, column=2, sticky="W")
-        T9.grid(row=4, column=2, sticky="W")
-        T10.grid(row=5, column=2, sticky="W")
-        T11.grid(row=6, column=2, sticky="W")
+        permFrame1.pack(side=tk.TOP, expand=1, fill="x")
+        permFrame2.pack(side=tk.TOP, expand=1, fill="x")
+        permFrame3.pack(side=tk.RIGHT, expand=1, fill="both")
         nb.add(permissions, text="User Permissions")
 
-    def raise_frame(frame):
-        frame.tkraise()
-
-    # Swipe Data Get
-
-
-    def getData(dct):
+    def getData(self, dct, uid=None):
+        if uid is None:
+            uid = self.uid.get()
+        for dct in [self.tools, self.user_flags]:
+            for key, boolean_var in self.tools.items():
+                v = self.dct.get(uid, {}).get(key)
+                if v is not None:
+                    boolean_var.set(v)
         self.uni.set(dct.get(self.uid.get(), {}).get('uni', ''))
-        self.user.set(dct.get(self.uid.get(), {}).get('user', False))
-
-        self.printer.set(dct.get(self.uid.get(), {}).get('printer', False))
-        self.laser.set(dct.get(self.uid.get(), {}).get('laser', False))
-        self.mill.set(dct.get(self.uid.get(), {}).get('mill', False))
-        self.vinyl.set(dct.get(self.uid.get(), {}).get('vinyl', False))
-        self.solder.set(dct.get(self.uid.get(), {}).get('solder', False))
-        self.drill.set(dct.get(self.uid.get(), {}).get('drill', False))
-        self.sewing.set(dct.get(self.uid.get(), {}).get('sewing', False))
-
-        self.osc.set(dct.get(self.uid.get(), {}).get('oscope', False))
-        self.superusr.set(dct.get(self.uid.get(), {}).get('superusr', False))
-        self.ban.set(dct.get(self.uid.get(), {}).get('banned', False))
-
 
     def getDataUNI(self):
-        self.dct[self.uni2uid[self.uni.get()]]['user']
-        self.user.set(dct[uni2uid[self.uni.get()]]['user'])
-        self.printer.set(dct[uni2uid[self.uni.get()]]['printer'])
-        self.laser.set(dct[uni2uid[self.uni.get()]]['laser'])
-        self.mill.set(dct[uni2uid[self.uni.get()]]['mill'])
-        self.vinyl.set(dct[uni2uid[self.uni.get()]]['vinyl'])
-        self.solder.set(dct[uni2uid[self.uni.get()]]['solder'])
-        self.drill.set(dct[uni2uid[self.uni.get()]]['drill'])
-        self.sewing.set(dct[uni2uid[self.uni.get()]]['sewing'])
-        self.osc.set(dct[uni2uid[self.uni.get()]]['oscope'])
-        self.superusr.set(dct[uni2uid[uni.get()]]['superusr'])
-        self.ban.set(dct[uni2uid[self.uni.get()]]['banned'])
-
+        self.getData(self, self.dct, uid=self.uni2uid[self.uni.get()])
 
     def setDataUNI(self):
-	top = Toplevel()
-	top.title("Superuser Authentication")
-
-	E0 = Entry(top, text="Superuser UID")
-	E0.pack()
-	
-	x = StringVar()
-
-	B0 = Button(top, text="Authenticate", command=lambda: x.set(E0.get()))
-	B0.pack()
-	
-	if(dct.get(x.get(), {}).get('superusr', False)):
-            manage.change_permissions_uni(self.uni.get(), 'user', self.user.get(), dmanage.ct)
-            manage.change_permissions_uni(self.uni.get(), 'printer', self.printer.get(), dmanage.ct)
-            manage.change_permissions_uni(self.uni.get(), 'laser', self.laser.get(), dmanage.ct)
-            manage.change_permissions_uni(self.uni.get(), 'mill', self.mill.get(), dmanage.ct)
-       	    manage.change_permissions_uni(self.uni.get(), 'vinyl', self.vinyl.get(), dmanage.ct)
-            manage.change_permissions_uni(self.uni.get(), 'solder', self.solder.get(), dmanage.ct)
-            manage.change_permissions_uni(self.uni.get(), 'drill', self.drill.get(), dmanage.ct)
-            manage.change_permissions_uni(self.uni.get(), 'sewing', self.sewing.get(), dmanage.ct)
-            manage.change_permissions_uni(self.uni.get(), 'osmanage.cope', self.osmanage.c.get(), dmanage.ct)
-            manage.change_permissions_uni(self.uni.get(), 'superusr', self.superusr.get(), dmanage.ct)
-            manage.change_permissions_uni(self.uni.get(), 'banned', self.ban.get(), dmanage.ct)
-
-	top.close()
+        kvs = {k: self[k].get() for k in self.tools}
+        kvs.update({k: self[k].get() for k in self.user_flags})
+        manage.change_permissions(uni=self.uni.get(), **kvs)
 
     def update_ui(self, rfid, dct, uni2uid):
         self.dct = dct
         self.uni2uid = uni2uid
 
-        self.window.update()
         self.uid.set(rfid)
         if rfid:
-            raise_frame(permissions)
-            getData(dct)
+            self.getData(dct)
+            self._frame_permissions.tkraise()
+        self.window.update()
 
+    def init_global_ui_vars(self, tools, user_flags):
+        self.uid = tk.StringVar()
+        self.uni = tk.StringVar()
+        self.firstname = tk.StringVar()
+        self.lastname = tk.StringVar()
 
-    def __init__(self):
+        # "user permissions"
+        self.tools = {k: tk.BooleanVar() for k in tools}
+        self.user_flags = {k: tk.BooleanVar() for k in user_flags}
 
-        # Main self.window
-        self.window = Tkinter.Tk()
+    def __init__(self, tools, user_flags):
+        self.window = tk.Tk()
         self.window.title("Card Swipe System")
-
-        # "add user" screen
-        self.uid = StringVar()
-        self.uni = StringVar()
-        self.firstname = StringVar()
-        self.lastname = StringVar()
-
-        # "user permissions" screen
-        self.user = StringVar()
-        self.printer = BooleanVar()
-        self.laser = BooleanVar()
-        self.mill = BooleanVar()
-        self.vinyl = BooleanVar()
-        self.solder = BooleanVar()
-        self.drill = BooleanVar()
-        self.sewing = BooleanVar()
-        self.hand = BooleanVar()
-        self.osc = BooleanVar()
-        self.superusr = BooleanVar()
-        self.ban = BooleanVar()
-
-        flag = 0
+        self.init_global_ui_vars(tools, user_flags)
         self.notebook()
-
-        # Establish dctionary of users
+        self.window.update()

@@ -10,20 +10,9 @@ from datetime import datetime
 import sys
 
 
-def add_user(uid, uni, lastname, firstname, dct):
-    raise NotImplemented('... TODO')
-
-    try:
-        #Order : [uni, lastname, firstname, user, drill, mill, sewing, printer, solder, oscope, vinyl, laser, super, banned]
-        default_list = [
-            uni, lastname, firstname, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        if(uni == 'ye2184'):
-            default_list = [
-                uni, lastname, firstname, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
-        dct[uid] = default_list
-    except:
-        e = sys.exc_info()[0]
-        return e
+def add_user(uid, uni, lastname, firstname):
+    print(uid, uni, lastname, firstname)
+    # TODO: write to redis with no perms by default
 
 
 def change_permissions(uid, field, perm, dct):
@@ -84,8 +73,8 @@ def log_entry(uid, uni, cnx):
 #   Pass the UID of the card, the field to query, and the MySQL db connection
 
 
-def change_permissions(uni, field, perm):
-    raise NotImplemented("TODO")
+def change_permissions(uni, **fields):
+    print(uni, fields)
     #  for h, i in dct.iteritems():
         #  if(i[0] == uni):
             #  if (field == 'user'):

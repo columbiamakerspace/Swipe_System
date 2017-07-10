@@ -17,7 +17,10 @@ from rfid_reader import RfidReader
 from display_manager import DisplayManager
 
 rfid_reader = RfidReader()
-display = DisplayManager()
+display = DisplayManager(
+    tools=['3d_printer', 'laser_cutter', 'mill', 'vinyl_cutter',
+           'soldering_iron', 'drill_press', 'sewing_machine', 'oscilloscope'],
+    user_flags=['user', 'superuser', 'banned'])
 
 dct = {
     '4808739405663507168\n2cef529fab': {
@@ -42,13 +45,17 @@ uni2uid = {
 }
 
 
-while True:
 
-    # Pulling current swiped user data
+# Pulling current swiped user data
+def process_rfid():
     rfid = rfid_reader.get()
+    if rfid:
+        display.update_ui(rfid, dct, uni2uid)
+    display.window.after(100, process_rfid)
 
-    display.update_ui(rfid, dct, uni2uid)
-    #  if condition:
-        #  sync_with_db
-    #  if other_condition:
-        #  perform_operation
+#  if condition: #  sync_with_db
+#  if other_condition:
+    #  perform_operation
+display.window.after(100, process_rfid)
+display.window.mainloop()
+# TODO: exit properly
