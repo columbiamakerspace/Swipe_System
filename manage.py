@@ -84,29 +84,30 @@ def log_entry(uid, uni, cnx):
 #   Pass the UID of the card, the field to query, and the MySQL db connection
 
 
-def change_permissions(uni, field, perm, dct):
-    for h, i in dct.iteritems():
-        if(i[0] == uni):
-            if (field == 'user'):
-                i[3] = perm
-            elif (field == 'drill'):
-                i[4] = perm
-            elif (field == 'mill'):
-                i[5] = perm
-            elif (field == 'sewing'):
-                i[6] = perm
-            elif (field == 'printer'):
-                i[7] = perm
-            elif (field == 'solder'):
-                i[8] = perm
-            elif (field == 'oscope'):
-                i[9] = perm
-            elif (field == 'vinyl'):
-                i[10] = perm
-            elif (field == 'laser'):
-                i[11] = perm
-            elif (field == 'super'):
-                i[12] = perm
-            elif (field == 'banned'):
-                i[13] = perm
-                h = i
+def change_permissions(uni, field, perm):
+    raise NotImplemented("TODO")
+    #  for h, i in dct.iteritems():
+        #  if(i[0] == uni):
+            #  if (field == 'user'):
+                #  i[3] = perm
+            #  elif (field == 'drill'):
+                #  i[4] = perm
+            #  elif (field == 'mill'):
+                #  i[5] = perm
+            #  elif (field == 'sewing'):
+                #  i[6] = perm
+            #  elif (field == 'printer'):
+                #  i[7] = perm
+            #  elif (field == 'solder'):
+                #  i[8] = perm
+            #  elif (field == 'oscope'):
+                #  i[9] = perm
+            #  elif (field == 'vinyl'):
+                #  i[10] = perm
+            #  elif (field == 'laser'):
+                #  i[11] = perm
+            #  elif (field == 'super'):
+                #  i[12] = perm
+            #  elif (field == 'banned'):
+                #  i[13] = perm
+                #  h = i

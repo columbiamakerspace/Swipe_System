@@ -14,16 +14,40 @@
 
 import manage
 from rfid_reader import RfidReader
-import display_manager
+from display_manager import DisplayManager
 
 rfid_reader = RfidReader()
+display = DisplayManager()
+
+dct = {
+    '4808739405663507168\n2cef529fab': {
+        "uni": 'ye2184',
+        "first_name": 'Yonah',
+        "last_name": 'Elorza',
+        "user": 1,
+        "drill": 1,
+        "mill": 1,
+        "sewing": 1,
+        "printer": 1,
+        "solder": 1,
+        "oscope": 1,
+        "vinyl": 1,
+        "laser": 1,
+        "super": 1,
+        "banned": 0
+    }
+}
+uni2uid = {
+    'ye2184': '4808739405663507168\n2cef529fab'
+}
+
 
 while True:
 
     # Pulling current swiped user data
     rfid = rfid_reader.get()
 
-    display_manager.update_ui(rfid)
+    display.update_ui(rfid, dct, uni2uid)
     #  if condition:
         #  sync_with_db
     #  if other_condition:
