@@ -11,7 +11,7 @@ def notebook():
 
     frame_signin(nb)
     frame_users(nb)
-    frame_superuser_auth(nb)
+    frame_permissions(nb)
     nb.pack(expand=1, fill="both")
 
 
@@ -61,22 +61,6 @@ def frame_users(nb):
     C4.pack(side=TOP, expand=1, fill="both")
     A0.pack(side=TOP, expand=1, fill="both")
     nb.add(swiper, text="Add User")
-
-# superusruser Authentication Frame
-def frame_superuser_auth(nb):
-    superusrUserAuth = ttk.Frame(nb)
-    authFrame = Frame(superusrUserAuth)
-    authFrame.pack(side=TOP, expand=1, fill="both")
-    D0 = Checkbutton(
-        authFrame,
-        text="Unlock on superusruser Swipe",
-        variable=unlocked,
-        onvalue=1,
-        offvalue=0,
-        padx=5,
-        pady=5)
-    D0.pack(side=TOP, expand=1, fill="both")
-    nb.add(superusrUserAuth, text="superusruser Authentication")
 
 # Permissions Frame
 def frame_permissions(nb):
