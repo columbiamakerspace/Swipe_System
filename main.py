@@ -1,26 +1,32 @@
 #!/usr/bin/env python
 
-# -----------------------------------------------------------
-# GUI tool for keeping track of users & the tools they are
-# trained on in Columbia's student run Makerspace
-# Written for the 2017 Columbia Makerspace swipe system
-# - Yonah Elorza 2017, with database assistance from Max Alto
-#
-#
-# Dependencies:
-#   * swig 3.0.12
-#       ** PCRE
-# -----------------------------------------------------------
 
-import manage
+from redis_connection import RedisConnection
 from rfid_reader import RfidReader
 from display_manager import DisplayManager
 
-rfid_reader = RfidReader()
-display = DisplayManager(
-    tools=['3d_printer', 'laser_cutter', 'mill', 'vinyl_cutter',
-           'soldering_iron', 'drill_press', 'sewing_machine', 'oscilloscope'],
-    user_flags=['user', 'superuser', 'banned'])
+SETTINGS = {
+    'user_privileges': {
+        '3d_printer': False,
+        'laser_cutter': False,
+        'mill': False,
+        'vinyl_cutter': False,
+        'soldering_iron': False,
+        'drill_press': False,
+        'sewing_machine': False,
+        'oscilloscope': False,
+        'user': False,
+        'superuser': False,
+        'banned': False},
+    'rfid_regex': r'^[0-9A-z]+\n[0-9A-z]{10}$'
+}
+
+rfid_reader = RfidReader(SETTINGS['rfid_regex'])
+db = RedisConnection(
+    uid_regex=SETTINGS['rfid_regex'],
+    user_privileges=SETTINGS['user_privileges'],
+)
+display = DisplayManager(db=db, user_privileges=SETTINGS['user_privileges'])
 
 dct = {
     '4808739405663507168\n2cef529fab': {
@@ -50,7 +56,7 @@ uni2uid = {
 def process_rfid():
     rfid = rfid_reader.get()
     if rfid:
-        display.update_ui(rfid, dct, uni2uid)
+        display.update_ui(rfid)
     display.window.after(100, process_rfid)
 
 #  if condition: #  sync_with_db

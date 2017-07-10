@@ -1,11 +1,19 @@
-from itertools import chain
+# -----------------------------------------------------------
+# GUI tool for keeping track of users & the user_privileges they are
+# trained on in Columbia's student run Makerspace
+# Written for the 2017 Columbia Makerspace swipe system
+# - Yonah Elorza 2017, with database assistance from Max Alto
+#
+# Dependencies:
+#   * swig 3.0.12
+#       ** PCRE
+# -----------------------------------------------------------
+
 try:
     import Tkinter as tk
 except:
     import tkinter as tk
 import ttk
-
-import manage
 
 
 class DisplayManager(object):
@@ -47,7 +55,7 @@ class DisplayManager(object):
         def add(entries):
             for k, v in entries.items():
                 v.set(k)
-            manage.add_user(
+            self.db.add_user(
                 uid=self.uid.get(), uni=self.uni.get(),
                 lastname=self.lastname.get(), firstname=self.firstname.get())
         tk.Button(
@@ -69,14 +77,13 @@ class DisplayManager(object):
             .pack(side=tk.LEFT, expand=1, fill="x")
 
         # Get and Set Buttons
-        tk.Button(permFrame1, text="Get", command=self.getDataUNI, padx=5,
+        tk.Button(permFrame1, text="Get", command=self.getData, padx=5,
                   pady=5).pack(side=tk.RIGHT)
         tk.Button(permFrame2, text="Set", command=self.setDataUNI, padx=5,
                   pady=5).pack(side=tk.RIGHT)
 
         # All the different tool trainings
-        for n, (key, var) in enumerate(chain(
-                self.tools.items(), self.user_flags.items())):
+        for n, (key, var) in enumerate(self.user_privileges_dct.items()):
             tk.Checkbutton(
                 permFrame3,
                 text=key,
@@ -92,47 +99,37 @@ class DisplayManager(object):
         permFrame3.pack(side=tk.RIGHT, expand=1, fill="both")
         nb.add(permissions, text="User Permissions")
 
-    def getData(self, dct, uid=None):
-        if uid is None:
-            uid = self.uid.get()
-        for dct in [self.tools, self.user_flags]:
-            for key, boolean_var in self.tools.items():
-                v = self.dct.get(uid, {}).get(key)
-                if v is not None:
-                    boolean_var.set(v)
-        self.uni.set(dct.get(self.uid.get(), {}).get('uni', ''))
-
-    def getDataUNI(self):
-        self.getData(self, self.dct, uid=self.uni2uid[self.uni.get()])
+    def getData(self):
+        for key, val in self.db.fetch_user_profile_data(
+                uid=self.uid.get(), uni=self.uni.get()):
+            if val is not None:
+                var = self.user_privileges_dct[key]
+                var.set(val)
 
     def setDataUNI(self):
-        kvs = {k: self[k].get() for k in self.tools}
-        kvs.update({k: self[k].get() for k in self.user_flags})
-        manage.change_permissions(uni=self.uni.get(), **kvs)
+        kvs = {k: self[k].get() for k in self.user_privileges_dct}
+        self.db.change_permissions(uni=self.uni.get(), **kvs)
 
-    def update_ui(self, rfid, dct, uni2uid):
-        self.dct = dct
-        self.uni2uid = uni2uid
-
+    def update_ui(self, rfid):
         self.uid.set(rfid)
         if rfid:
-            self.getData(dct)
+            self.getData()
             self._frame_permissions.tkraise()
         self.window.update()
 
-    def init_global_ui_vars(self, tools, user_flags):
+    def init_global_ui_vars(self, user_privileges):
         self.uid = tk.StringVar()
         self.uni = tk.StringVar()
         self.firstname = tk.StringVar()
         self.lastname = tk.StringVar()
 
         # "user permissions"
-        self.tools = {k: tk.BooleanVar() for k in tools}
-        self.user_flags = {k: tk.BooleanVar() for k in user_flags}
+        self.user_privileges_dct = {k: tk.BooleanVar() for k in user_privileges}
 
-    def __init__(self, tools, user_flags):
+    def __init__(self, db, user_privileges):
+        self.db = db
         self.window = tk.Tk()
         self.window.title("Card Swipe System")
-        self.init_global_ui_vars(tools, user_flags)
+        self.init_global_ui_vars(user_privileges)
         self.notebook()
         self.window.update()

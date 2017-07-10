@@ -8,7 +8,7 @@ class RfidReader(object):
     _rfid = []
 
     def __init__(self,
-                 rfid_regex=r'^[0-9A-z]+\n[0-9A-z]{10}$',
+                 rfid_regex,
                  allowed_chars_regex=r'[0-9A-z\n]'):
         self.rfid_regex = rfid_regex
         self.allowed_chars_regex = allowed_chars_regex
