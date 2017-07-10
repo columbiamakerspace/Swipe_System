@@ -251,7 +251,7 @@ class DisplayManager(object):
 	B0 = Button(top, text="Authenticate", command=lambda: x.set(E0.get()))
 	B0.pack()
 	
-	if(dct.get(x, {}).get('superusr', False)):
+	if(dct.get(x.get(), {}).get('superusr', False)):
             manage.change_permissions_uni(self.uni.get(), 'user', self.user.get(), dmanage.ct)
             manage.change_permissions_uni(self.uni.get(), 'printer', self.printer.get(), dmanage.ct)
             manage.change_permissions_uni(self.uni.get(), 'laser', self.laser.get(), dmanage.ct)
