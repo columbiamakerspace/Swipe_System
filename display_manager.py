@@ -85,8 +85,7 @@ class DisplayManager(object):
         B1 = Button(
             permFrame1, text="Get", command=self.getDataUNI, padx=5, pady=5)
         B2 = Button(
-            permFrame2, text="Set", command=self.setDataUNI, padx=5, pady=5,
-            state=DISABLED)
+            permFrame2, text="Set", command=self.setDataUNI, padx=5, pady=5)
         B1.pack(side=RIGHT)
         B2.pack(side=RIGHT)
 
@@ -97,7 +96,6 @@ class DisplayManager(object):
             variable=self.user,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
         T1 = Checkbutton(
@@ -106,7 +104,6 @@ class DisplayManager(object):
             variable=self.printer,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
         T2 = Checkbutton(
@@ -115,7 +112,6 @@ class DisplayManager(object):
             variable=self.laser,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
         T3 = Checkbutton(
@@ -124,7 +120,6 @@ class DisplayManager(object):
             variable=self.mill,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
         T4 = Checkbutton(
@@ -133,7 +128,6 @@ class DisplayManager(object):
             variable=self.vinyl,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
         T5 = Checkbutton(
@@ -142,7 +136,6 @@ class DisplayManager(object):
             variable=self.solder,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
         T6 = Checkbutton(
@@ -151,7 +144,6 @@ class DisplayManager(object):
             variable=self.drill,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
         T7 = Checkbutton(
@@ -160,7 +152,6 @@ class DisplayManager(object):
             variable=self.sewing,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
         T8 = Checkbutton(
@@ -169,7 +160,6 @@ class DisplayManager(object):
             variable=self.hand,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
         T9 = Checkbutton(
@@ -178,7 +168,6 @@ class DisplayManager(object):
             variable=self.osc,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
         T10 = Checkbutton(
@@ -187,7 +176,6 @@ class DisplayManager(object):
             variable=self.superusr,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
         T11 = Checkbutton(
@@ -196,7 +184,6 @@ class DisplayManager(object):
             variable=self.ban,
             onvalue=1,
             offvalue=0,
-            state=DISABLED,
             padx=5,
             pady=5)
 
@@ -253,17 +240,31 @@ class DisplayManager(object):
 
 
     def setDataUNI(self):
-        manage.change_permissions_uni(self.uni.get(), 'user', self.user.get(), dmanage.ct)
-        manage.change_permissions_uni(self.uni.get(), 'printer', self.printer.get(), dmanage.ct)
-        manage.change_permissions_uni(self.uni.get(), 'laser', self.laser.get(), dmanage.ct)
-        manage.change_permissions_uni(self.uni.get(), 'mill', self.mill.get(), dmanage.ct)
-        manage.change_permissions_uni(self.uni.get(), 'vinyl', self.vinyl.get(), dmanage.ct)
-        manage.change_permissions_uni(self.uni.get(), 'solder', self.solder.get(), dmanage.ct)
-        manage.change_permissions_uni(self.uni.get(), 'drill', self.drill.get(), dmanage.ct)
-        manage.change_permissions_uni(self.uni.get(), 'sewing', self.sewing.get(), dmanage.ct)
-        manage.change_permissions_uni(self.uni.get(), 'osmanage.cope', self.osmanage.c.get(), dmanage.ct)
-        manage.change_permissions_uni(self.uni.get(), 'superusr', self.superusr.get(), dmanage.ct)
-        manage.change_permissions_uni(self.uni.get(), 'banned', self.ban.get(), dmanage.ct)
+	top = Toplevel()
+	top.title("Superuser Authentication")
+
+	E0 = Entry(top, text="Superuser UID")
+	E0.pack()
+	
+	x = StringVar()
+
+	B0 = Button(top, text="Authenticate", command=lambda: x.set(E0.get()))
+	B0.pack()
+	
+	if(dct.get(x, {}).get('superusr', False)):
+            manage.change_permissions_uni(self.uni.get(), 'user', self.user.get(), dmanage.ct)
+            manage.change_permissions_uni(self.uni.get(), 'printer', self.printer.get(), dmanage.ct)
+            manage.change_permissions_uni(self.uni.get(), 'laser', self.laser.get(), dmanage.ct)
+            manage.change_permissions_uni(self.uni.get(), 'mill', self.mill.get(), dmanage.ct)
+       	    manage.change_permissions_uni(self.uni.get(), 'vinyl', self.vinyl.get(), dmanage.ct)
+            manage.change_permissions_uni(self.uni.get(), 'solder', self.solder.get(), dmanage.ct)
+            manage.change_permissions_uni(self.uni.get(), 'drill', self.drill.get(), dmanage.ct)
+            manage.change_permissions_uni(self.uni.get(), 'sewing', self.sewing.get(), dmanage.ct)
+            manage.change_permissions_uni(self.uni.get(), 'osmanage.cope', self.osmanage.c.get(), dmanage.ct)
+            manage.change_permissions_uni(self.uni.get(), 'superusr', self.superusr.get(), dmanage.ct)
+            manage.change_permissions_uni(self.uni.get(), 'banned', self.ban.get(), dmanage.ct)
+
+	top.close()
 
     def update_ui(self, rfid, dct, uni2uid):
         self.dct = dct
