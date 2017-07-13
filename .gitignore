@@ -3,3 +3,6 @@
 .ropeproject/
 *.rdb
 __pycache__/
+
+*.egg-info
+build/
